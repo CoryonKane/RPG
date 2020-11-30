@@ -9,12 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlayerDto {
+public class StoryDto {
     private Long id;
-    private String userName;
-    private String name;
-    private String password;
-    private String email;
-    private String profilePicture;
-    private Long dungeonMasterId;
 }

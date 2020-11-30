@@ -1,17 +1,17 @@
 package com.codecool.rpg.controller;
 
-import com.codecool.rpg.service.PlayerService;
+import com.codecool.rpg.service.StoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("player/")
-public class PlayerController {
-    private final PlayerService playerService;
+@RequestMapping("story/")
+public class StoryController {
+    private final StoryService storyService;
 
     @Autowired
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
+    public StoryController(StoryService storyService) {
+        this.storyService = storyService;
     }
 }
