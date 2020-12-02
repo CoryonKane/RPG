@@ -1,5 +1,6 @@
-package com.codecool.rpg.model;
+package com.codecool.rpg.model.entity;
 
+import com.codecool.rpg.model.entity.DungeonMaster;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

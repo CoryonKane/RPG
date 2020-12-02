@@ -1,4 +1,4 @@
-package com.codecool.rpg.model;
+package com.codecool.rpg.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
