@@ -1,0 +1,6 @@
+#ui {
+    -fx-background-color: darkgray;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+}
