@@ -2,10 +2,12 @@ package com.codecool.rpg.model.map;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class Tiles {
     public  int TILE_WIDTH = 32;
 

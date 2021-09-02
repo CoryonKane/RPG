@@ -16,7 +16,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlayerCharacter extends Actor{
+public class PlayerCharacter extends Actor {
     private int level;
     private int experience;
     private int expNeeded;

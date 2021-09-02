@@ -7,26 +7,23 @@ import com.codecool.rpg.model.map.Tiles;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Draw {
 
     private GraphicsContext context;
     private Canvas canvas;
     private GameMap map;
-    private Tiles tiles;
 
-    public Draw (Canvas canvas, GraphicsContext context) {
-        this.canvas = canvas;
-        this.context = context;
-        this.tiles = new Tiles();
+    private final Tiles tiles;
+
+    @Autowired
+    public Draw(Tiles tiles) {
+        this.tiles = tiles;
     }
 
     public void refresh() {
