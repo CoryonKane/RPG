@@ -4,7 +4,6 @@ import com.codecool.rpg.model.actor.Actor;
 import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.item.Item;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,7 @@ public abstract class Enemy extends Actor {
 
     @Override
     public void die(Actor player) {
-        ((PlayerCharacter) player).getEXP(this.rewardEXP);
+        ((PlayerCharacter) player).addEXP(this.rewardEXP);
     }
 
 }

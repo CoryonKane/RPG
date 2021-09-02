@@ -58,9 +58,9 @@ public class Main extends Application{
 
         Scene scene = new Scene(borderPane);
         scene.getStylesheets().add((new File("src/main/style/stylesheet.css")).toURI().toURL().toExternalForm());
-        primaryStage.setScene(scene);
         scene.setOnKeyPressed(this::onKeyPressed);
         scene.setOnKeyReleased(this::onKeyReleased);
+        primaryStage.setScene(scene);
 
         primaryStage.getIcons().add(
                 new Image("/images/icon.jpg")

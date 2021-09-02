@@ -20,7 +20,6 @@ public class MapLoader {
 
         InputStream is = MapLoader.class.getResourceAsStream(mapName);
 
-
         Scanner scanner = new Scanner(is);
 
         GameMap map = GameMap.builder()
@@ -34,9 +33,9 @@ public class MapLoader {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             List<Cell> row = new ArrayList<>();
-            for (String s : line.split("")) {
+            for (String mapCharacter : line.split("")) {
                 Cell cell = Cell.builder()
-                        .cellType(Arrays.stream(CellType.values()).filter(v -> s.equals(v.getTileCharacter())).findFirst().orElse(null))
+                        .cellType(Arrays.stream(CellType.values()).filter(v -> mapCharacter.equals(v.getTileCharacter())).findFirst().orElse(null))
                         .gameMap(map)
                         .build();
                 row.add(cell);

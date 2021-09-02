@@ -12,7 +12,7 @@ public class Tiles {
     public  int TILE_WIDTH = 32;
 
     private final Image tileset = new Image("/images/tiles.png", 543 * 2, 543 * 2, true, false);
-    private Map<String, Tile> tileMap = new HashMap<>();
+    private final Map<String, Tile> tileMap = new HashMap<>();
     public class Tile {
         public final int x, y, w, h;
         Tile(int i, int j) {

@@ -52,7 +52,7 @@ public class PlayerCharacter extends Actor {
         expNeeded += expNeedGrowth;
     }
 
-    public void getEXP(int exp) {
+    public void addEXP(int exp) {
         this.experience += exp;
         if (this.expNeeded < this.experience) {
             levelUp();
