@@ -8,10 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 @Data
 public class Draw {
 
@@ -21,9 +18,17 @@ public class Draw {
 
     private final Tiles tiles;
 
-    @Autowired
-    public Draw(Tiles tiles) {
-        this.tiles = tiles;
+    private static Draw instance;
+
+    public static Draw getInstance() {
+        if (instance == null) {
+            instance = new Draw();
+        }
+        return instance;
+    }
+
+    private Draw() {
+        this.tiles = new Tiles();
     }
 
     public void refresh() {

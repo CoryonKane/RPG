@@ -3,10 +3,20 @@ package com.codecool.rpg.util;
 import com.codecool.rpg.model.map.Direction;
 import com.codecool.rpg.model.map.GameMap;
 import javafx.scene.input.KeyEvent;
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class MovementController {
+
+    private static MovementController instance;
+
+    public static MovementController getInstance() {
+        if (instance == null) {
+            instance = new MovementController();
+        }
+        return instance;
+    }
+
+    private MovementController() {}
 
     public void kexPressed(KeyEvent keyEvent, GameMap map) {
         switch (keyEvent.getCode()) {

@@ -4,14 +4,22 @@ import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.map.GameMap;
 import com.codecool.rpg.model.map.cell.Cell;
 import com.codecool.rpg.model.map.cell.CellType;
-import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.*;
 
-@Component
 public class MapLoader {
     private final Map<String, GameMap> mapCache = new HashMap<>();
+    private static MapLoader instance;
+
+    public static MapLoader getInstance() {
+        if (instance == null) {
+            instance = new MapLoader();
+        }
+        return instance;
+    }
+
+    private MapLoader() {}
 
     public GameMap loadMap(String mapName, PlayerCharacter player) {
         if (mapCache.containsKey(mapName)) {

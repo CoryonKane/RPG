@@ -18,8 +18,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.awt.*;
 import java.io.File;
@@ -33,18 +31,10 @@ public class Main extends Application{
             Toolkit.getDefaultToolkit().getScreenSize().height);
     private final GraphicsContext context = canvas.getGraphicsContext2D();
     private final Timer timer = new Timer(true);
-    private Draw draw;
-    private MapLoader mapLoader;
-    private MovementController movementController;
+    private final Draw draw = Draw.getInstance();
+    private final MapLoader mapLoader = MapLoader.getInstance();
+    private final MovementController movementController = MovementController.getInstance();
 
-
-    @Override
-    public void init() {
-        ConfigurableApplicationContext applicationContext = new SpringApplication(RpgApplication.class).run();
-        draw = applicationContext.getBean(Draw.class);
-        mapLoader = applicationContext.getBean(MapLoader.class);
-        movementController = applicationContext.getBean(MovementController.class);
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
