@@ -1,6 +1,5 @@
 package com.codecool.rpg.util.state;
 
-import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.actor.enemy.Enemy;
 import com.codecool.rpg.model.actor.npc.NonPlayerCharacter;
 import com.codecool.rpg.model.item.Item;
@@ -14,8 +13,6 @@ import java.util.*;
 
 public class StateLoader {
     private final GameState state = GameState.getInstance();
-    private GameMap map;
-    private final String resources = "src/main/resources";
     private static StateLoader instance;
 
     public static StateLoader getInstance() {
@@ -28,6 +25,7 @@ public class StateLoader {
     private StateLoader() {}
 
     public GameMap loadMap(String mapName) {
+        System.out.println(mapName);
         if (state.getMapCache().containsKey(mapName)) {
             return state.getMapCache().get(mapName);
         }
@@ -36,7 +34,7 @@ public class StateLoader {
 
         Scanner scanner = new Scanner(is);
 
-        map = GameMap.builder()
+        GameMap map = GameMap.builder()
                 .map(new ArrayList<>())
                 .items(new ArrayList<>())
                 .enemies(new ArrayList<>())
@@ -67,16 +65,22 @@ public class StateLoader {
         }
 
         state.getMapCache().put(mapName, map);
+
         String[] s = mapName.split("\\.");
-        loadEnemies(resources + s[0] + "_enemies.ser");
-        loadItems(resources + s[0] + "_items.ser");
-        loadGates(resources + s[0] + "_gates.ser");
-        loadNPCs(resources + s[0] + "_npc.ser");
+        String resources = state.getResources();
+        loadEnemies(resources + s[0] + "_enemies.ser", map);
+        loadItems(resources + s[0] + "_items.ser", map);
+        loadGates(resources + s[0] + "_gates.ser", map);
+        loadNPCs(resources + s[0] + "_npc.ser", map);
 
         return map;
     }
 
-    private void loadEnemies(String mapName) {
+    public void loadNewActiveMap(String mapName) {
+        state.setActiveMap(loadMap(mapName));
+    }
+
+    private void loadEnemies(String mapName, GameMap map) {
         List<Enemy> list;
         try {
             FileInputStream file = new FileInputStream(mapName);
@@ -87,14 +91,14 @@ public class StateLoader {
             in.close();
             file.close();
         } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No enemy file found.");
-            ex.printStackTrace();
+            System.out.println("No enemy file found: " + mapName);
+//            ex.printStackTrace();
             return;
         }
         list.forEach(map::addEnemy);
     }
 
-    private void loadItems(String mapName) {
+    private void loadItems(String mapName, GameMap map) {
         List<Item> list;
         try {
             FileInputStream file = new FileInputStream(mapName);
@@ -105,14 +109,14 @@ public class StateLoader {
             in.close();
             file.close();
         } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No item file found.");
-            ex.printStackTrace();
+            System.out.println("No item file found: " + mapName);
+//            ex.printStackTrace();
             return;
         }
         list.forEach(map::addItem);
     }
 
-    private void loadGates(String mapName) {
+    private void loadGates(String mapName, GameMap map) {
         List<Gate> list;
         try {
             FileInputStream file = new FileInputStream(mapName);
@@ -123,14 +127,14 @@ public class StateLoader {
             in.close();
             file.close();
         } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No gate file found.");
-            ex.printStackTrace();
+            System.out.println("No gate file found: " + mapName);
+//            ex.printStackTrace();
             return;
         }
         list.forEach(map::setGate);
     }
 
-    private void loadNPCs(String mapName) {
+    private void loadNPCs(String mapName, GameMap map) {
         List<NonPlayerCharacter> list;
         try {
             FileInputStream file = new FileInputStream(mapName);
@@ -141,8 +145,8 @@ public class StateLoader {
             in.close();
             file.close();
         } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No npc file found.");
-            ex.printStackTrace();
+            System.out.println("No npc file found: " + mapName);
+//            ex.printStackTrace();
             return;
         }
         list.forEach(map::addNPC);

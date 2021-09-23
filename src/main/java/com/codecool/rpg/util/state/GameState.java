@@ -12,6 +12,8 @@ public class GameState {
     private boolean godMode = false;
     private final Map<String, GameMap> mapCache = new HashMap<>();
     private final PlayerCharacter player = PlayerCharacter.getInstance();
+    private final String resources = "src/main/resources";
+    private GameMap activeMap;
 
     private static GameState instance;
 

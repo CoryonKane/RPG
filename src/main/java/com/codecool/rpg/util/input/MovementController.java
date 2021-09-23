@@ -5,18 +5,13 @@ import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.map.Direction;
 import com.codecool.rpg.model.map.GameMap;
 import com.codecool.rpg.model.map.cell.Cell;
+import com.codecool.rpg.util.state.GameState;
 import javafx.scene.input.KeyEvent;
-import lombok.Getter;
-import lombok.Setter;
 
 
 public class MovementController implements InputHandler{
 
-    @Getter
-    @Setter
     private PlayerCharacter player;
-    @Getter
-    @Setter
     private GameMap map;
 
     private static MovementController instance;
@@ -33,6 +28,9 @@ public class MovementController implements InputHandler{
     }
 
     public void handleInput(KeyEvent keyEvent) {
+        map = GameState.getInstance().getActiveMap();
+        player = GameState.getInstance().getPlayer();
+
         switch (keyEvent.getCode()) {
             case UP:
             case W:

@@ -4,6 +4,7 @@ import com.codecool.rpg.model.actor.enemy.Enemy;
 import com.codecool.rpg.model.item.Item;
 import com.codecool.rpg.model.map.GameMap;
 import com.codecool.rpg.model.map.Tiles;
+import com.codecool.rpg.util.state.GameState;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -14,7 +15,6 @@ public class Draw {
 
     private GraphicsContext context;
     private Canvas canvas;
-    private GameMap map;
     private boolean isRefreshing = false;
 
     private final Tiles tiles;
@@ -36,6 +36,7 @@ public class Draw {
         if (isRefreshing) {
             return;
         }
+        GameMap map = GameState.getInstance().getActiveMap();
         isRefreshing = true;
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());

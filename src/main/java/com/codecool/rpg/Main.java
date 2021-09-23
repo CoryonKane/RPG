@@ -1,7 +1,6 @@
 package com.codecool.rpg;
 
 import com.codecool.rpg.model.actor.PlayerCharacter;
-import com.codecool.rpg.model.map.GameMap;
 import com.codecool.rpg.util.Draw;
 import com.codecool.rpg.util.state.StateLoader;
 import com.codecool.rpg.util.input.InputHandler;
@@ -95,11 +94,8 @@ public class Main extends Application{
 
     private void newGame () {
         PlayerCharacter.newPlayer();
-        GameMap map = stateLoader.loadMap("/templates/start.txt");
-        draw.setMap(map);
-        MovementController movementController = MovementController.getInstance();
-        movementController.setMap(map);
-        inputHandler = movementController;
+        stateLoader.loadNewActiveMap("/templates/start.txt");
+        inputHandler = MovementController.getInstance();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
