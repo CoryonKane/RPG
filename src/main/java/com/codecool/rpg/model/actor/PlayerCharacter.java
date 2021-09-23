@@ -3,7 +3,6 @@ package com.codecool.rpg.model.actor;
 import com.codecool.rpg.model.event.PlayerDiesEvent;
 import com.codecool.rpg.model.item.Item;
 import com.codecool.rpg.model.map.Direction;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,8 +16,6 @@ public class PlayerCharacter extends Actor implements Serializable {
     private int expNeeded;
     private int expNeedGrowth = 100;
     private int hpGrowth = 10;
-    private boolean godMode;
-    @JsonIgnore
     private Map<Item, Integer> inventory = new HashMap<>();
 
     private static PlayerCharacter instance;
@@ -35,8 +32,6 @@ public class PlayerCharacter extends Actor implements Serializable {
     }
 
     private PlayerCharacter() {}
-
-//    public PlayerCharacter(Map<Item, Integer> inventory, ) {}
 
     public static void newPlayer() {
         initiate();

@@ -3,7 +3,7 @@ package com.codecool.rpg;
 import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.map.GameMap;
 import com.codecool.rpg.util.Draw;
-import com.codecool.rpg.util.MapLoader;
+import com.codecool.rpg.util.state.StateLoader;
 import com.codecool.rpg.util.input.InputHandler;
 import com.codecool.rpg.util.input.MovementController;
 import javafx.application.Application;
@@ -33,7 +33,7 @@ public class Main extends Application{
     private final GraphicsContext context = canvas.getGraphicsContext2D();
     private final Timer timer = new Timer(true);
     private final Draw draw = Draw.getInstance();
-    private final MapLoader mapLoader = MapLoader.getInstance();
+    private final StateLoader stateLoader = StateLoader.getInstance();
     private InputHandler inputHandler;
 
 
@@ -95,7 +95,7 @@ public class Main extends Application{
 
     private void newGame () {
         PlayerCharacter.newPlayer();
-        GameMap map = mapLoader.loadMap("/templates/start.txt");
+        GameMap map = stateLoader.loadMap("/templates/start.txt");
         draw.setMap(map);
         MovementController movementController = MovementController.getInstance();
         movementController.setMap(map);

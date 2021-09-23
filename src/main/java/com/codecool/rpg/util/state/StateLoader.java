@@ -1,4 +1,4 @@
-package com.codecool.rpg.util;
+package com.codecool.rpg.util.state;
 
 import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.actor.enemy.Enemy;
@@ -12,28 +12,27 @@ import com.codecool.rpg.model.map.cell.Gate;
 import java.io.*;
 import java.util.*;
 
-public class MapLoader {
-    private final Map<String, GameMap> mapCache = new HashMap<>();
-    private final PlayerCharacter player = PlayerCharacter.getInstance();
+public class StateLoader {
+    private final GameState state = GameState.getInstance();
     private GameMap map;
-    private static MapLoader instance;
     private final String resources = "src/main/resources";
+    private static StateLoader instance;
 
-    public static MapLoader getInstance() {
+    public static StateLoader getInstance() {
         if (instance == null) {
-            instance = new MapLoader();
+            instance = new StateLoader();
         }
         return instance;
     }
 
-    private MapLoader() {}
+    private StateLoader() {}
 
     public GameMap loadMap(String mapName) {
-        if (mapCache.containsKey(mapName)) {
-            return mapCache.get(mapName);
+        if (state.getMapCache().containsKey(mapName)) {
+            return state.getMapCache().get(mapName);
         }
 
-        InputStream is = MapLoader.class.getResourceAsStream(mapName);
+        InputStream is = StateLoader.class.getResourceAsStream(mapName);
 
         Scanner scanner = new Scanner(is);
 
@@ -42,7 +41,7 @@ public class MapLoader {
                 .items(new ArrayList<>())
                 .enemies(new ArrayList<>())
                 .name(mapName)
-                .player(player)
+                .player(state.getPlayer())
                 .build();
 
         int rowCounter = 0;
@@ -67,7 +66,7 @@ public class MapLoader {
             rowCounter++;
         }
 
-        mapCache.put(mapName, map);
+        state.getMapCache().put(mapName, map);
         String[] s = mapName.split("\\.");
         loadEnemies(resources + s[0] + "_enemies.ser");
         loadItems(resources + s[0] + "_items.ser");
