@@ -15,6 +15,7 @@ public class Draw {
     private GraphicsContext context;
     private Canvas canvas;
     private GameMap map;
+    private boolean isRefreshing = false;
 
     private final Tiles tiles;
 
@@ -32,6 +33,10 @@ public class Draw {
     }
 
     public void refresh() {
+        if (isRefreshing) {
+            return;
+        }
+        isRefreshing = true;
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getMaxWidth(); x++) {
@@ -40,11 +45,12 @@ public class Draw {
             }
         }
         for (Enemy e : map.getEnemies()) {
-            tiles.drawTile(context, e, e.getCol(), e.getRow());
+            tiles.drawTile(context, e, e.getRow(), e.getCol());
         }
         for (Item i : map.getItems()) {
-            tiles.drawTile(context, i, i.getCol(), i.getCol());
+            tiles.drawTile(context, i, i.getRow(), i.getCol());
         }
-        tiles.drawTile(context, map.getPlayer(), map.getPlayer().getCol(), map.getPlayer().getRow());
+        tiles.drawTile(context, map.getPlayer(), map.getPlayer().getRow(), map.getPlayer().getCol());
+        isRefreshing = false;
     }
 }

@@ -2,11 +2,11 @@ package com.codecool.rpg.model.actor.npc;
 
 import com.codecool.rpg.model.actor.Actor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public abstract class NonPlayerCharacter extends Actor {
+public abstract class NonPlayerCharacter extends Actor implements Serializable {
 }

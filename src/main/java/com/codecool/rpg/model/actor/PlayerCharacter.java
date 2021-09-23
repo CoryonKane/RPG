@@ -1,29 +1,52 @@
 package com.codecool.rpg.model.actor;
 
+import com.codecool.rpg.model.event.PlayerDiesEvent;
 import com.codecool.rpg.model.item.Item;
 import com.codecool.rpg.model.map.Direction;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class PlayerCharacter extends Actor {
+public class PlayerCharacter extends Actor implements Serializable {
     private int level;
     private int experience;
     private int expNeeded;
     private int expNeedGrowth = 100;
     private int hpGrowth = 10;
     private boolean godMode;
-    private List<Item> inventory = new ArrayList<>();
+    @JsonIgnore
+    private Map<Item, Integer> inventory = new HashMap<>();
+
+    private static PlayerCharacter instance;
+
+    public static PlayerCharacter getInstance() {
+        initiate();
+        return instance;
+    }
+
+    private static void initiate() {
+        if (instance == null) {
+            instance = new PlayerCharacter();
+        }
+    }
+
+    private PlayerCharacter() {}
+
+//    public PlayerCharacter(Map<Item, Integer> inventory, ) {}
+
+    public static void newPlayer() {
+        initiate();
+        instance.setRow(4);
+        instance.setCol(4);
+        instance.setExperience(0);
+        instance.setLevel(1);
+        instance.setFacing(Direction.UP);
+        instance.fillTileNames();
+    }
 
     @Override
     public void fillTileNames() {
@@ -36,12 +59,15 @@ public class PlayerCharacter extends Actor {
     }
 
     @Override
-    public void move() {
+    public void move(Direction direction) {
+        this.setCol(this.getCol() + direction.getCol());
+        this.setRow(this.getRow() + direction.getRow());
+        this.setFacing(direction);
     }
 
     @Override
-    public void die(Actor actor) {
-
+    public PlayerDiesEvent die() {
+        return new PlayerDiesEvent();
     }
 
     public void levelUp() {
@@ -56,6 +82,21 @@ public class PlayerCharacter extends Actor {
         this.experience += exp;
         if (this.expNeeded < this.experience) {
             levelUp();
+        }
+    }
+
+    public void addItems(Map<Item, Integer> items) {
+        if (this.inventory == null) {
+            this.inventory = new HashMap<>();
+        }
+        items.forEach(this::addItem);
+    }
+
+    public void addItem(Item item, Integer amount) {
+        if (this.inventory.containsKey(item)) {
+            this.inventory.put(item, this.inventory.get(item) + amount);
+        } else {
+            this.inventory.put(item, amount);
         }
     }
 }

@@ -1,17 +1,21 @@
 package com.codecool.rpg.model.map.cell;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.codecool.rpg.model.event.Event;
+import com.codecool.rpg.model.event.TransferEvent;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Gate {
-    private Cell cell;
-    private String mapName;
-    private int startX;
-    private int startY;
+public class Gate extends Cell implements Serializable {
+    private int goalCol;
+    private int goalRow;
+    private String goalMapName;
+
+    @Override
+    public Event arriveOn() {
+        return TransferEvent.builder().gate(this).build();
+    }
 }

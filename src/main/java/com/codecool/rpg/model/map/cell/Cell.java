@@ -1,12 +1,15 @@
 package com.codecool.rpg.model.map.cell;
 
 import com.codecool.rpg.model.actor.Actor;
+import com.codecool.rpg.model.event.EmptyEvent;
 import com.codecool.rpg.model.event.Event;
-import com.codecool.rpg.model.event.TransferEvent;
 import com.codecool.rpg.model.item.Item;
 import com.codecool.rpg.model.map.Drawable;
 import com.codecool.rpg.model.map.GameMap;
 import lombok.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Builder
@@ -15,11 +18,12 @@ import lombok.*;
 public class Cell implements Drawable {
     private CellType cellType;
     private Actor actor;
-    private Item item;
-    private Gate gate;
+    private Map<Item, Integer> items;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private GameMap gameMap;
+    private int row;
+    private int col;
 
     @Override
     public String getTileName() {
@@ -32,11 +36,21 @@ public class Cell implements Drawable {
     }
 
     public Event arriveOn() {
-        if (this.gate != null) {
-            return TransferEvent.builder()
-                    .gate(gate)
-                    .build();
+        return new EmptyEvent();
+    }
+
+    public void addItems(Map<Item, Integer> items) {
+        if (this.items == null) {
+            this.items = new HashMap<>();
         }
-        return null;
+        items.forEach(this::addItem);
+    }
+
+    public void addItem(Item item, Integer amount) {
+        if (this.items.containsKey(item)) {
+            this.items.put(item, this.items.get(item) + amount);
+        } else {
+            this.items.put(item, amount);
+        }
     }
 }

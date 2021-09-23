@@ -1,24 +1,24 @@
 package com.codecool.rpg.model.map;
 
 public enum Direction {
-    UP(1,0),
-    DOWN(-1,0),
+    UP(-1,0),
+    DOWN(1,0),
     RIGHT(0,1),
     LEFT(0,-1);
 
-    private final int x;
-    private final int y;
+    private final int col;
+    private final int row;
 
-    Direction (int x, int y) {
-        this.x = x;
-        this.y = y;
+    Direction (int col, int row) {
+        this.col = col;
+        this.row = row;
     }
 
-    public int getX() {
-        return x;
+    public int getCol() {
+        return col;
     }
 
-    public int getY() {
-        return y;
+    public int getRow() {
+        return row;
     }
 }

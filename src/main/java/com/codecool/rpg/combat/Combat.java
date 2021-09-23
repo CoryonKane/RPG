@@ -20,7 +20,7 @@ public class Combat {
         if (actualDamage > 0) {
             defender.setCurrHealth(defender.getCurrHealth() - actualDamage);
             if (defender.getCurrHealth() < 1) {
-                defender.die(attacker);
+                defender.die().doEvent();
             }
         }
     }
