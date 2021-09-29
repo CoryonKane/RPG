@@ -14,6 +14,7 @@ public class GameState {
     private final PlayerCharacter player = PlayerCharacter.getInstance();
     private final String resources = "src/main/resources";
     private GameMap activeMap;
+    private String saveName;
 
     private static GameState instance;
 
@@ -25,4 +26,12 @@ public class GameState {
     }
 
     private GameState() {}
+
+    public String getTemplateRoute() {
+        return this.resources + "/templates/" + saveName;
+    }
+
+    public String getSaveRoute() {
+        return this.resources + "/saves/" + saveName;
+    }
 }

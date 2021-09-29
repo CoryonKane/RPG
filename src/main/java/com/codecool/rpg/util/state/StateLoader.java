@@ -25,7 +25,6 @@ public class StateLoader {
     private StateLoader() {}
 
     public GameMap loadMap(String mapName) {
-        System.out.println(mapName);
         if (state.getMapCache().containsKey(mapName)) {
             return state.getMapCache().get(mapName);
         }
@@ -42,6 +41,21 @@ public class StateLoader {
                 .player(state.getPlayer())
                 .build();
 
+        fillMap(scanner, map);
+
+        state.getMapCache().put(mapName, map);
+
+        String[] s = mapName.split("\\.");
+        String route = checkExistingSave("") ? state.getSaveRoute() : state.getTemplateRoute();
+        loadList(route + s[0] + "_enemies.ser", Enemy.class).forEach(map::addEnemy);
+        loadList(route + s[0] + "_items.ser", Item.class).forEach(map::addItem);
+        loadList(route + s[0] + "_gates.ser", Gate.class).forEach(map::setGate);
+        loadList(route + s[0] + "_npc.ser", NonPlayerCharacter.class).forEach(map::addNPC);
+
+        return map;
+    }
+
+    private void fillMap(Scanner scanner, GameMap map) {
         int rowCounter = 0;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -63,92 +77,29 @@ public class StateLoader {
             }
             rowCounter++;
         }
-
-        state.getMapCache().put(mapName, map);
-
-        String[] s = mapName.split("\\.");
-        String resources = state.getResources();
-        loadEnemies(resources + s[0] + "_enemies.ser", map);
-        loadItems(resources + s[0] + "_items.ser", map);
-        loadGates(resources + s[0] + "_gates.ser", map);
-        loadNPCs(resources + s[0] + "_npc.ser", map);
-
-        return map;
     }
 
     public void loadNewActiveMap(String mapName) {
         state.setActiveMap(loadMap(mapName));
     }
 
-    private void loadEnemies(String mapName, GameMap map) {
-        List<Enemy> list;
+    private <T> List<T> loadList(String fileName, Class<T> tClass) {
+        List<T> list = new ArrayList<>();
         try {
-            FileInputStream file = new FileInputStream(mapName);
+            FileInputStream file = new FileInputStream(fileName);
             ObjectInputStream in = new ObjectInputStream(file);
 
-            list = (List<Enemy>) in.readObject();
-
-            in.close();
-            file.close();
+            list = (List<T>) in.readObject();
         } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No enemy file found: " + mapName);
+            System.out.println("No npc file found: " + fileName);
 //            ex.printStackTrace();
-            return;
         }
-        list.forEach(map::addEnemy);
+        return list;
     }
 
-    private void loadItems(String mapName, GameMap map) {
-        List<Item> list;
-        try {
-            FileInputStream file = new FileInputStream(mapName);
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            list = (List<Item>) in.readObject();
-
-            in.close();
-            file.close();
-        } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No item file found: " + mapName);
-//            ex.printStackTrace();
-            return;
-        }
-        list.forEach(map::addItem);
+    private boolean checkExistingSave(String route) {
+        return false;
     }
 
-    private void loadGates(String mapName, GameMap map) {
-        List<Gate> list;
-        try {
-            FileInputStream file = new FileInputStream(mapName);
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            list = (List<Gate>) in.readObject();
-
-            in.close();
-            file.close();
-        } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No gate file found: " + mapName);
-//            ex.printStackTrace();
-            return;
-        }
-        list.forEach(map::setGate);
-    }
-
-    private void loadNPCs(String mapName, GameMap map) {
-        List<NonPlayerCharacter> list;
-        try {
-            FileInputStream file = new FileInputStream(mapName);
-            ObjectInputStream in = new ObjectInputStream(file);
-
-            list = (List<NonPlayerCharacter>) in.readObject();
-
-            in.close();
-            file.close();
-        } catch(IOException | ClassNotFoundException ex) {
-            System.out.println("No npc file found: " + mapName);
-//            ex.printStackTrace();
-            return;
-        }
-        list.forEach(map::addNPC);
-    }
+    private void loadPlayer() {}
 }
