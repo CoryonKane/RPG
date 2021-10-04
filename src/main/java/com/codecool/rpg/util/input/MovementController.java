@@ -24,7 +24,7 @@ public class MovementController implements InputHandler{
     }
 
     private MovementController() {
-        this.player = PlayerCharacter.getInstance();
+        this.player = GameState.getInstance().getPlayer();
     }
 
     public void handleInput(KeyEvent keyEvent) {

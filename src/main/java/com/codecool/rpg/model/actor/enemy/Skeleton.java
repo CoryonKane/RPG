@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @NoArgsConstructor
-public class Skeleton extends Enemy implements Serializable {
+public class Skeleton extends Enemy {
 
     @Override
     public void move(Direction direction) {

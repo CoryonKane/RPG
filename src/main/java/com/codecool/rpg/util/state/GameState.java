@@ -4,6 +4,8 @@ import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.model.map.GameMap;
 import lombok.Data;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +13,10 @@ import java.util.Map;
 public class GameState {
     private boolean godMode = false;
     private final Map<String, GameMap> mapCache = new HashMap<>();
-    private final PlayerCharacter player = PlayerCharacter.getInstance();
     private final String resources = "src/main/resources";
+    private PlayerCharacter player;
     private GameMap activeMap;
-    private String saveName;
+    private String saveName = "1";
 
     private static GameState instance;
 
@@ -28,10 +30,14 @@ public class GameState {
     private GameState() {}
 
     public String getTemplateRoute() {
-        return this.resources + "/templates/" + saveName;
+        return this.resources + "/templates/";
     }
 
     public String getSaveRoute() {
-        return this.resources + "/saves/" + saveName;
+        return this.resources + "/saves/" + saveName  + "/";
+    }
+
+    public boolean checkExistingSaveRoute(String route) {
+        return Files.exists(Paths.get(route));
     }
 }

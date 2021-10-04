@@ -4,7 +4,7 @@ public enum CellType {
     EMPTY("empty", " ", false),
     WALL("wall", "#", false),
     FLOOR("floor", ".", true),
-    DOOR("door", "d", false),
+    CLOSED_DOOR("door", "d", false),
     OPENED_DOOR("openedDoor", "o", true),
     SECRET_DOOR("", "", false),
     TRAPDOOR("", "", true);

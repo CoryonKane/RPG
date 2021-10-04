@@ -1,46 +1,33 @@
 package com.codecool.rpg.model.actor;
 
 import com.codecool.rpg.model.event.PlayerDiesEvent;
+import com.codecool.rpg.model.item.Inventory;
 import com.codecool.rpg.model.item.Item;
 import com.codecool.rpg.model.map.Direction;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class PlayerCharacter extends Actor implements Serializable {
+@NoArgsConstructor
+
+public class PlayerCharacter extends Actor {
     private int level;
     private int experience;
     private int expNeeded;
     private int expNeedGrowth = 100;
     private int hpGrowth = 10;
-    private Map<Item, Integer> inventory = new HashMap<>();
+    private Inventory inventory = new Inventory();
 
-    private static PlayerCharacter instance;
-
-    public static PlayerCharacter getInstance() {
-        initiate();
-        return instance;
-    }
-
-    private static void initiate() {
-        if (instance == null) {
-            instance = new PlayerCharacter();
-        }
-    }
-
-    private PlayerCharacter() {}
-
-    public static void newPlayer() {
-        initiate();
-        instance.setRow(4);
-        instance.setCol(4);
-        instance.setExperience(0);
-        instance.setLevel(1);
-        instance.setFacing(Direction.UP);
-        instance.fillTileNames();
+    public void newPlayer() {
+        this.setRow(4);
+        this.setCol(4);
+        this.setExperience(0);
+        this.setLevel(1);
+        this.setFacing(Direction.UP);
+        this.fillTileNames();
     }
 
     @Override
@@ -80,18 +67,9 @@ public class PlayerCharacter extends Actor implements Serializable {
         }
     }
 
-    public void addItems(Map<Item, Integer> items) {
-        if (this.inventory == null) {
-            this.inventory = new HashMap<>();
-        }
-        items.forEach(this::addItem);
-    }
-
-    public void addItem(Item item, Integer amount) {
-        if (this.inventory.containsKey(item)) {
-            this.inventory.put(item, this.inventory.get(item) + amount);
-        } else {
-            this.inventory.put(item, amount);
-        }
+    public void addItems(Inventory items) {
+        items.getInventory().forEach((k, v) -> {
+            inventory.addItem(k, v);
+        });
     }
 }

@@ -5,6 +5,7 @@ import com.codecool.rpg.util.Draw;
 import com.codecool.rpg.util.state.StateLoader;
 import com.codecool.rpg.util.input.InputHandler;
 import com.codecool.rpg.util.input.MovementController;
+import com.codecool.rpg.util.state.StateSaver;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -93,9 +94,9 @@ public class Main extends Application{
     }
 
     private void newGame () {
-        PlayerCharacter.newPlayer();
-        stateLoader.loadNewActiveMap("/templates/start.txt");
+        stateLoader.loadNewActiveMap("start.txt");
         inputHandler = MovementController.getInstance();
+        StateSaver.getInstance().saveState();
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

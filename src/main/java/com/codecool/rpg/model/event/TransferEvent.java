@@ -18,6 +18,6 @@ public class TransferEvent implements Event{
 
     @Override
     public void doEvent() {
-        stateLoader.loadMap(gate.getGoalMapName()); // TODO: 2021. 09. 06.
+//        stateLoader.loadMap(gate.getGoalMapName());
     }
 }
