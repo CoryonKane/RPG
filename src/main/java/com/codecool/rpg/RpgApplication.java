@@ -1,13 +1,12 @@
 package com.codecool.rpg;
 
-import org.springframework.boot.SpringApplication;
+import javafx.application.Application;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 public class RpgApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RpgApplication.class, args);
+        Application.launch(Main.class, args);
     }
 
 }
