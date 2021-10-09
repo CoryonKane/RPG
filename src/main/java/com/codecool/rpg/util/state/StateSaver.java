@@ -1,6 +1,8 @@
 package com.codecool.rpg.util.state;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class StateSaver {
 
@@ -62,9 +64,6 @@ public class StateSaver {
     private void writeMap(String s, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))){
             writer.write(s);
-
-            System.out.println("Map serialized");
-
         } catch(IOException ex) {
             ex.printStackTrace();
         }
@@ -76,13 +75,12 @@ public class StateSaver {
                 ObjectOutputStream oos = new ObjectOutputStream(file)
         ){
             oos.writeObject(o);
-            System.out.println("Object serialized");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     private void createSaveFolder(String route) {
-        new File(route).mkdir();
+        System.out.println("mkdir: " + route + ": " + new File(route).mkdirs());
     }
 }

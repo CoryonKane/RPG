@@ -15,7 +15,7 @@ public class Draw {
 
     private GraphicsContext context;
     private Canvas canvas;
-    private final GameState state = GameState.getInstance();
+    private GameState state;
     private boolean isRefreshing = false;
 
     private final Tiles tiles;
@@ -37,6 +37,7 @@ public class Draw {
         if (isRefreshing) {
             return;
         }
+        state = GameState.getInstance();
         GameMap map = state.getActiveMap();
         isRefreshing = true;
         context.setFill(Color.BLACK);

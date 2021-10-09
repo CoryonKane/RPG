@@ -1,13 +1,11 @@
 package com.codecool.rpg;
 
-import com.codecool.rpg.model.actor.PlayerCharacter;
 import com.codecool.rpg.util.Draw;
+import com.codecool.rpg.util.state.GameState;
 import com.codecool.rpg.util.state.StateLoader;
 import com.codecool.rpg.util.input.InputHandler;
 import com.codecool.rpg.util.input.MovementController;
-import com.codecool.rpg.util.state.StateSaver;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,8 +20,6 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Main extends Application{
 
@@ -31,10 +27,9 @@ public class Main extends Application{
             Toolkit.getDefaultToolkit().getScreenSize().width,
             Toolkit.getDefaultToolkit().getScreenSize().height);
     private final GraphicsContext context = canvas.getGraphicsContext2D();
-    private final Timer timer = new Timer(true);
     private final Draw draw = Draw.getInstance();
     private final StateLoader stateLoader = StateLoader.getInstance();
-    private InputHandler inputHandler;
+    private final GameState state = GameState.getInstance();
 
 
     @Override
@@ -56,7 +51,7 @@ public class Main extends Application{
 
     private Scene setUpStartScene(BorderPane borderPane) throws MalformedURLException {
         Scene scene = new Scene(borderPane);
-        scene.getStylesheets().add((new File("src/main/style/stylesheet.css")).toURI().toURL().toExternalForm());
+//        scene.getStylesheets().add((new File("src/main/style/stylesheet.css")).toURI().toURL().toExternalForm());
         scene.setOnKeyPressed(this::onKeyPressed);
         scene.setOnKeyReleased(this::onKeyReleased);
         return scene;
@@ -76,8 +71,7 @@ public class Main extends Application{
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-        inputHandler.handleInput(keyEvent);
-        draw.refresh();
+        state.handleInput(keyEvent);
     }
 
     private void onKeyReleased(KeyEvent keyEvent) {
@@ -89,23 +83,9 @@ public class Main extends Application{
         }
     }
 
-    private void refresh() {
-        draw.refresh();
-    }
-
     private void newGame () {
         stateLoader.loadNewActiveMap("start.txt");
-        inputHandler = MovementController.getInstance();
-        StateSaver.getInstance().saveState();
-
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    refresh();
-                });
-            }
-        }, 0, 600);
+        state.startTimer();
     }
 
     private void exit() {
