@@ -10,11 +10,7 @@ import com.codecool.rpg.model.map.cell.CellType;
 import com.codecool.rpg.model.map.cell.Gate;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StateLoader {
     private final GameState state = GameState.getInstance();
@@ -30,8 +26,8 @@ public class StateLoader {
     private StateLoader() {}
 
     public GameMap loadMap(String mapName) {
-        String route = state.checkExistingSaveRoute(state.getSaveRoute()) ? state.getSaveRoute() : state.getTemplateRoute();
-        System.out.println(route);
+        state.checkExistingSaveRoute();
+        String route = state.isHasSave() ? state.getSaveRoute() : state.getTemplateRoute();
         String fileName = route + mapName;
         if (state.getMapCache().containsKey(fileName)) {
             return state.getMapCache().get(fileName);
@@ -42,12 +38,19 @@ public class StateLoader {
         state.getMapCache().put(mapName, map);
 
         String[] s = fileName.split("\\.");
-        loadList(s[0] + "_enemies.ser", Enemy.class).forEach(map::addEnemy);
-        loadList(s[0] + "_inventories.ser", Inventory.class).forEach(map::addInventory);
-        loadList(s[0] + "_gates.ser", Gate.class).forEach(map::setGate);
-        loadList(s[0] + "_npc.ser", NonPlayerCharacter.class).forEach(map::addNPC);
-        loadPlayer(route + "player.ser");
-
+        if (!state.isHasSave()) {
+            loadTemplateList(s[0] + "_enemies.ser", Enemy.class).forEach(map::addEnemy);
+            loadTemplateList(s[0] + "_inventories.ser", Inventory.class).forEach(map::addInventory);
+            loadTemplateList(s[0] + "_gates.ser", Gate.class).forEach(map::setGate);
+            loadTemplateList(s[0] + "_npcs.ser", NonPlayerCharacter.class).forEach(map::addNPC);
+            loadTemplatePlayer(route + "player.ser");
+        } else {
+            loadSavedList(s[0] + "_enemies.ser", Enemy.class).forEach(map::addEnemy);
+            loadSavedList(s[0] + "_inventories.ser", Inventory.class).forEach(map::addInventory);
+            loadSavedList(s[0] + "_gates.ser", Gate.class).forEach(map::setGate);
+            loadSavedList(s[0] + "_npcs.ser", NonPlayerCharacter.class).forEach(map::addNPC);
+            loadSavedPlayer(route + "player.ser");
+        }
         return map;
     }
 
@@ -59,36 +62,48 @@ public class StateLoader {
                 .name(mapName)
                 .build();
 
-        fillMap(fileName, map);
+        prepareFillingMap(fileName, map);
 
         return map;
     }
 
-    private void fillMap(String fileName, GameMap map) {
+    private void prepareFillingMap(String fileName, GameMap map) {
         int rowCounter = 0;
-        try (Stream<String> lines = Files.lines(Path.of(fileName))){
-            List<String> listLines = lines.collect(Collectors.toList());
-            for (String line : listLines) {
-                List<Cell> row = new ArrayList<>();
-                int colCounter = 0;
-                for (String mapCharacter : line.split("")) {
-                    Cell cell = Cell.builder()
-                            .cellType(Arrays.stream(CellType.values()).filter(v -> mapCharacter.equals(v.getTileCharacter())).findFirst().orElse(null))
-                            .gameMap(map)
-                            .row(rowCounter)
-                            .col(colCounter)
-                            .build();
-                    row.add(cell);
-                    colCounter++;
-                }
-                map.addRow(row);
-                if (row.size() > map.getMaxWidth()) {
-                    map.setMaxWidth(row.size());
-                }
-                rowCounter++;
+        if (!state.isHasSave()) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(fileName))))) {
+                fillMap(map, rowCounter, br);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))){
+                fillMap(map, rowCounter, br);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void fillMap(GameMap map, int rowCounter, BufferedReader br) throws IOException {
+        String line;
+        while ((line = br.readLine()) != null) {
+            List<Cell> row = new ArrayList<>();
+            int colCounter = 0;
+            for (String mapCharacter : line.split("")) {
+                Cell cell = Cell.builder()
+                        .cellType(Arrays.stream(CellType.values()).filter(v -> mapCharacter.equals(v.getTileCharacter())).findFirst().orElse(null))
+                        .gameMap(map)
+                        .row(rowCounter)
+                        .col(colCounter)
+                        .build();
+                row.add(cell);
+                colCounter++;
+            }
+            map.addRow(row);
+            if (row.size() > map.getMaxWidth()) {
+                map.setMaxWidth(row.size());
+            }
+            rowCounter++;
         }
     }
 
@@ -96,32 +111,49 @@ public class StateLoader {
         state.setActiveMap(loadMap(mapName));
     }
 
-    private <T> List<T> loadList(String fileName, Class<T> tClass) {
+    private <T> List<T> loadTemplateList(String fileName, Class<T> tClass) {
         List<T> list = new ArrayList<>();
-        try {
-            FileInputStream file = new FileInputStream(fileName);
-            ObjectInputStream in = new ObjectInputStream(file);
-
+        try (InputStream is = getClass().getResourceAsStream(fileName);
+             ObjectInputStream in = new ObjectInputStream(is)){
             list = (List<T>) in.readObject();
-            in.close();
-            file.close();
-        } catch(IOException | ClassNotFoundException ex) {
+        } catch(IOException | ClassNotFoundException | NullPointerException ex) {
             System.out.println("No file found: " + fileName);
         }
-        return list;
+        return list != null ? list : new ArrayList<>();
     }
 
-    private void loadPlayer(String fileName) {
+    private <T> List<T> loadSavedList(String fileName, Class<T> tClass) {
+        List<T> list = new ArrayList<>();
+        try (InputStream is = new FileInputStream(fileName);
+             ObjectInputStream in = new ObjectInputStream(is)){
+            list = (List<T>) in.readObject();
+        } catch(IOException | ClassNotFoundException | NullPointerException ex) {
+            System.out.println("No file found: " + fileName);
+        }
+        return list != null ? list : new ArrayList<>();
+    }
+
+    private void loadTemplatePlayer(String fileName) {
         PlayerCharacter playerCharacter;
-        try {
-            FileInputStream file = new FileInputStream(fileName);
-            ObjectInputStream in = new ObjectInputStream(file);
+        try (InputStream file = getClass().getResourceAsStream(fileName);
+             ObjectInputStream in = new ObjectInputStream(file)){ ;
 
             playerCharacter = (PlayerCharacter) in.readObject();
+        } catch (IOException | ClassNotFoundException | NullPointerException e) {
+            System.out.println("No player found: " + fileName);
+            playerCharacter = new PlayerCharacter();
+            playerCharacter.newPlayer();
+        }
+        state.setPlayer(playerCharacter);
+    }
 
-            in.close();
-            file.close();
-        } catch (IOException | ClassNotFoundException e) {
+    private void loadSavedPlayer(String fileName) {
+        PlayerCharacter playerCharacter;
+        try (InputStream file = new FileInputStream(fileName);
+             ObjectInputStream in = new ObjectInputStream(file)){ ;
+
+            playerCharacter = (PlayerCharacter) in.readObject();
+        } catch (IOException | ClassNotFoundException | NullPointerException e) {
             System.out.println("No player found: " + fileName);
             playerCharacter = new PlayerCharacter();
             playerCharacter.newPlayer();
